@@ -290,25 +290,25 @@ def get_account_service() -> AccountService:
     return AccountService(client)
 
 
-# Override dependency functions in routers
-# Import the modules to override their dependency functions
-from .api import webhook as webhook_module
-from .api import positions as positions_module
-from .api import account as account_module
-from .api import orders as orders_module
-
-webhook_module.get_trading_service = get_trading_service
-positions_module.get_position_service = get_position_service
-account_module.get_account_service = get_account_service
-orders_module.get_trading_service = get_trading_service
-
-
 # Register routers
 app.include_router(health_router)
 app.include_router(webhook_router)
 app.include_router(positions_router)
 app.include_router(account_router)
 app.include_router(orders_router)
+
+
+# Override dependencies using FastAPI's dependency_overrides
+# This must be done AFTER including routers
+from .api import webhook as webhook_module
+from .api import positions as positions_module
+from .api import account as account_module
+from .api import orders as orders_module
+
+app.dependency_overrides[webhook_module.get_trading_service] = get_trading_service
+app.dependency_overrides[positions_module.get_position_service] = get_position_service
+app.dependency_overrides[account_module.get_account_service] = get_account_service
+app.dependency_overrides[orders_module.get_trading_service] = get_trading_service
 
 
 logger.info("application_configured")
