@@ -289,10 +289,16 @@ gcloud run deploy asterdex-trading-api \
 
 #### DigitalOcean App Platform
 
+**Quick Start**: See [.digitalocean/QUICK_START.md](.digitalocean/QUICK_START.md) for 5-minute deployment
+
+**Full Guide**: See [DIGITALOCEAN_DEPLOYMENT.md](DIGITALOCEAN_DEPLOYMENT.md) for detailed instructions
+
 1. Connect your GitHub repository
 2. Configure environment variables in the dashboard
 3. Use the Dockerfile for deployment
 4. Enable automatic deployments on push
+
+**Recommended Plan**: Basic ($12/month) - 1GB RAM, 1 vCPU
 
 #### Heroku
 
@@ -564,11 +570,15 @@ http://your-server-address:8000/webhook/tradingview
 }
 ```
 
-### 3. Add Webhook Secret (Optional)
+### 3. Add Webhook Secret (Recommended)
 
-If you set `WEBHOOK_SECRET` in your `.env` file, add it as a custom header in TradingView:
-- Header Name: `X-Webhook-Secret`
-- Header Value: `your-secret-token`
+If you set `WEBHOOK_SECRET` in your `.env` file (recommended for security), you'll need to include it in webhook requests.
+
+**Quick Setup:**
+- See [docs/WEBHOOK_SECRET_QUICKREF.md](docs/WEBHOOK_SECRET_QUICKREF.md) for quick setup
+- See [docs/WEBHOOK_SECRET_GUIDE.md](docs/WEBHOOK_SECRET_GUIDE.md) for detailed guide
+
+**TradingView Note:** Since TradingView doesn't support custom headers, use a webhook proxy (Cloudflare Worker) to add the `X-Webhook-Secret` header automatically.
 
 ## API Endpoints
 

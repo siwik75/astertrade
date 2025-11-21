@@ -38,6 +38,11 @@ class WebhookRequest(BaseModel):
         description="Order type: MARKET or LIMIT",
         examples=["MARKET", "LIMIT"]
     )
+    webhook_secret: Optional[str] = Field(
+        None,
+        description="Optional webhook secret for authentication (can be provided in body or header)",
+        examples=["your-secret-token-here"]
+    )
     
     @field_validator("action")
     @classmethod
@@ -164,6 +169,104 @@ class MarginTypeUpdateRequest(BaseModel):
             "examples": [
                 {"margin_type": "ISOLATED"},
                 {"margin_type": "CROSSED"}
+            ]
+        }
+    }
+
+
+class StrategyWebhookRequest(BaseModel):
+    """TradingView strategy webhook request model.
+    
+    This model handles TradingView strategy orders and automatically
+    determines the correct action (open/close/increase/decrease) based
+    on the order flow and current position.
+    """
+    
+    order_action: str = Field(
+        ...,
+        description="Strategy order action: buy or sell",
+        examples=["buy", "sell"]
+    )
+    symbol: str = Field(
+        ...,
+        description="Trading pair symbol (e.g., BTCUSDT)",
+        examples=["BTCUSDT", "ETHUSDT"]
+    )
+    contracts: Decimal = Field(
+        ...,
+        description="Number of contracts from strategy order",
+        examples=["0.575181", "0.001"]
+    )
+    position_size: Decimal = Field(
+        ...,
+        description="Strategy position size after this order",
+        examples=["0.575181", "-0.30691", "0"]
+    )
+    order_type: str = Field(
+        "MARKET",
+        description="Order type: MARKET or LIMIT",
+        examples=["MARKET", "LIMIT"]
+    )
+    price: Optional[Decimal] = Field(
+        None,
+        description="Limit order price (optional, for limit orders only)",
+        examples=["50000.00", "3000.50"]
+    )
+    webhook_secret: Optional[str] = Field(
+        None,
+        description="Optional webhook secret for authentication (can be provided in body or header)",
+        examples=["your-secret-token-here"]
+    )
+    
+    @field_validator("order_action")
+    @classmethod
+    def validate_order_action(cls, v: str) -> str:
+        """Validate order action is buy or sell."""
+        allowed_actions = {"buy", "sell"}
+        v_lower = v.lower()
+        if v_lower not in allowed_actions:
+            raise ValueError(
+                f"Order action must be one of {allowed_actions}, got '{v}'"
+            )
+        return v_lower
+    
+    @field_validator("order_type")
+    @classmethod
+    def validate_order_type(cls, v: str) -> str:
+        """Validate order type is MARKET or LIMIT."""
+        allowed_types = {"MARKET", "LIMIT"}
+        v_upper = v.upper()
+        if v_upper not in allowed_types:
+            raise ValueError(
+                f"Order type must be one of {allowed_types}, got '{v}'"
+            )
+        return v_upper
+    
+    @field_validator("contracts")
+    @classmethod
+    def validate_contracts(cls, v: Decimal) -> Decimal:
+        """Validate contracts is positive."""
+        if v <= 0:
+            raise ValueError("Contracts must be positive")
+        return v
+    
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "order_action": "buy",
+                    "symbol": "BTCUSDT",
+                    "contracts": "0.575181",
+                    "position_size": "0.575181",
+                    "order_type": "MARKET"
+                },
+                {
+                    "order_action": "sell",
+                    "symbol": "BTCUSDT",
+                    "contracts": "0.30691",
+                    "position_size": "0",
+                    "order_type": "MARKET"
+                }
             ]
         }
     }
