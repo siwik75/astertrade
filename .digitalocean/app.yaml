@@ -1,0 +1,77 @@
+# DigitalOcean App Platform Configuration
+# This file can be used to deploy via doctl CLI or as a reference
+
+name: asterdex-trading-api
+region: nyc
+
+services:
+  - name: api
+    # Use Dockerfile for build
+    dockerfile_path: Dockerfile
+    
+    # Source configuration
+    github:
+      repo: YOUR_USERNAME/YOUR_REPO
+      branch: main
+      deploy_on_push: true
+    
+    # HTTP configuration
+    http_port: 8000
+    
+    # Health check
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 5
+      period_seconds: 30
+      timeout_seconds: 10
+      success_threshold: 1
+      failure_threshold: 3
+    
+    # Environment variables
+    envs:
+      - key: ASTERDEX_BASE_URL
+        value: "https://fapi.asterdex.com"
+      - key: SERVER_HOST
+        value: "0.0.0.0"
+      - key: SERVER_PORT
+        value: "8000"
+      - key: DEFAULT_LEVERAGE
+        value: "10"
+      - key: DEFAULT_MARGIN_TYPE
+        value: "CROSSED"
+      - key: REQUEST_TIMEOUT
+        value: "30"
+      - key: MAX_RETRIES
+        value: "3"
+      - key: RATE_LIMIT_RETRY_DELAY
+        value: "2"
+      - key: LOG_LEVEL
+        value: "INFO"
+      
+      # Sensitive variables - set these in the DigitalOcean dashboard
+      # and mark as "encrypted"
+      - key: ASTERDEX_USER_ADDRESS
+        value: "CHANGE_ME"
+        type: SECRET
+      - key: ASTERDEX_SIGNER_ADDRESS
+        value: "CHANGE_ME"
+        type: SECRET
+      - key: ASTERDEX_PRIVATE_KEY
+        value: "CHANGE_ME"
+        type: SECRET
+      - key: WEBHOOK_SECRET
+        value: "CHANGE_ME"
+        type: SECRET
+    
+    # Instance configuration
+    instance_count: 1
+    instance_size_slug: basic-xxs  # $5/month - upgrade to basic-xs ($12) for production
+    
+    # Routes
+    routes:
+      - path: /
+
+# Optional: Add alerts
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED

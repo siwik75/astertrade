@@ -1,0 +1,168 @@
+# DigitalOcean Deployment Resources
+
+This directory contains everything you need to deploy your AsterDEX Trading API to DigitalOcean.
+
+## 📚 Documentation
+
+### 🚀 [QUICK_START.md](QUICK_START.md)
+**Start here!** 5-minute guide to deploy using App Platform (recommended).
+
+### 📖 [Full Deployment Guide](../DIGITALOCEAN_DEPLOYMENT.md)
+Comprehensive guide covering:
+- App Platform deployment (recommended)
+- Droplet/VPS deployment
+- Security configuration
+- SSL setup
+- Monitoring and maintenance
+
+### ✅ [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)
+Step-by-step checklist to ensure nothing is missed during deployment.
+
+## 🛠️ Configuration Files
+
+### `app.yaml`
+DigitalOcean App Platform configuration file. Use this to:
+- Deploy via `doctl` CLI
+- Reference for manual configuration
+- Version control your deployment settings
+
+### `droplet-setup.sh`
+Automated setup script for Droplet deployment. Run on a fresh Ubuntu 22.04 Droplet:
+```bash
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/.digitalocean/droplet-setup.sh | bash
+```
+
+## 🎯 Which Deployment Option?
+
+### App Platform (Recommended) ⭐
+**Best for most users**
+- ✅ 5-minute setup
+- ✅ Fully managed
+- ✅ Auto-scaling
+- ✅ Built-in SSL
+- ✅ $5-12/month
+- ❌ Less control
+
+**Use when:**
+- You want easy deployment
+- You don't want to manage servers
+- You need automatic scaling
+- You want built-in monitoring
+
+### Droplet (VPS)
+**For advanced users**
+- ✅ Full control
+- ✅ Custom configurations
+- ✅ Multiple services
+- ✅ $6+/month
+- ❌ Manual maintenance
+- ❌ More complex setup
+
+**Use when:**
+- You need full server access
+- You want to run multiple services
+- You're comfortable with Linux
+- You need custom configurations
+
+## 📊 Cost Breakdown
+
+| Service | Plan | RAM | CPU | Cost/Month | Best For |
+|---------|------|-----|-----|------------|----------|
+| **App Platform** | Basic | 512MB | 1 | $5 | Testing |
+| **App Platform** | Basic | 1GB | 1 | $12 | Production ⭐ |
+| **App Platform** | Professional | 2GB | 1 | $24 | High traffic |
+| **Droplet** | Basic | 1GB | 1 | $6 | DIY |
+| **Droplet** | Basic | 2GB | 1 | $12 | DIY Production |
+
+## 🚀 Quick Start Commands
+
+### App Platform (Web UI)
+1. Go to https://cloud.digitalocean.com/apps
+2. Click "Create App"
+3. Follow the wizard
+
+### App Platform (CLI)
+```bash
+# Install doctl
+brew install doctl  # macOS
+# or download from: https://docs.digitalocean.com/reference/doctl/
+
+# Authenticate
+doctl auth init
+
+# Deploy
+doctl apps create --spec .digitalocean/app.yaml
+```
+
+### Droplet
+```bash
+# Create Droplet via web UI, then:
+ssh root@YOUR_DROPLET_IP
+
+# Run automated setup
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/.digitalocean/droplet-setup.sh | bash
+```
+
+## 🔐 Security Checklist
+
+Before deploying:
+- [ ] Set strong `WEBHOOK_SECRET`
+- [ ] Mark `ASTERDEX_PRIVATE_KEY` as encrypted
+- [ ] Enable HTTPS
+- [ ] Set `LOG_LEVEL=INFO` or `WARNING`
+- [ ] Enable firewall (Droplet only)
+- [ ] Set up monitoring
+
+## 📈 Post-Deployment
+
+### Verify Deployment
+```bash
+# Health check
+curl https://your-app-url/health
+
+# API docs (visit in browser)
+https://your-app-url/docs
+```
+
+### Configure TradingView
+1. Go to TradingView alert settings
+2. Set webhook URL: `https://your-app-url/webhook/tradingview`
+3. Add header: `X-Webhook-Secret: your-secret`
+
+### Monitor
+- **App Platform**: Built-in metrics in dashboard
+- **Droplet**: `docker compose logs -f`
+
+## 🆘 Troubleshooting
+
+### Build Fails
+- Check Dockerfile syntax
+- Verify all dependencies in requirements.txt
+- Review build logs
+
+### App Crashes
+- Check environment variables
+- Review runtime logs
+- Verify health endpoint
+
+### Webhook Not Working
+- Verify URL is publicly accessible
+- Check webhook secret
+- Review logs for incoming requests
+
+## 📚 Additional Resources
+
+- [DigitalOcean App Platform Docs](https://docs.digitalocean.com/products/app-platform/)
+- [DigitalOcean Droplet Docs](https://docs.digitalocean.com/products/droplets/)
+- [Docker Documentation](https://docs.docker.com/)
+- [FastAPI Deployment](https://fastapi.tiangolo.com/deployment/)
+
+## 🤝 Support
+
+- **Project Issues**: [GitHub Issues](YOUR_REPO_URL/issues)
+- **DigitalOcean Support**: https://www.digitalocean.com/support
+- **Community**: [DigitalOcean Community](https://www.digitalocean.com/community)
+
+---
+
+**Need help?** Start with [QUICK_START.md](QUICK_START.md) or the [full deployment guide](../DIGITALOCEAN_DEPLOYMENT.md).
