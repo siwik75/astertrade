@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  asterdex-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: asterdex-trading-api
+    ports:
+      - "8000:8000"
+    environment:
+      # AsterDEX API Configuration
+      - ASTERDEX_BASE_URL=${ASTERDEX_BASE_URL:-https://fapi.asterdex.com}
+      - ASTERDEX_USER_ADDRESS=${ASTERDEX_USER_ADDRESS}
+      - ASTERDEX_SIGNER_ADDRESS=${ASTERDEX_SIGNER_ADDRESS}
+      - ASTERDEX_PRIVATE_KEY=${ASTERDEX_PRIVATE_KEY}
+      
+      # Server Configuration
+      - SERVER_HOST=${SERVER_HOST:-0.0.0.0}
+      - SERVER_PORT=${SERVER_PORT:-8000}
+      
+      # Webhook Security
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:-}
+      
+      # Trading Defaults
+      - DEFAULT_LEVERAGE=${DEFAULT_LEVERAGE:-10}
+      - DEFAULT_MARGIN_TYPE=${DEFAULT_MARGIN_TYPE:-CROSSED}
+      
+      # API Limits
+      - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-30}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+      - RATE_LIMIT_RETRY_DELAY=${RATE_LIMIT_RETRY_DELAY:-2}
+      
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    
+    env_file:
+      - .env
+    
+    volumes:
+      # Mount source code for development (comment out for production)
+      - ./src:/app/src
+      - ./main.py:/app/main.py
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    
+    networks:
+      - asterdex-network
+
+networks:
+  asterdex-network:
+    driver: bridge
