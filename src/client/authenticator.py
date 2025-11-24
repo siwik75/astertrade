@@ -121,6 +121,14 @@ class AsterDEXAuthenticator:
         # Prepare parameter string
         param_string = self.prepare_params(params)
         
+        logger.debug(
+            "signing_request",
+            param_string=param_string,
+            user=self.user,
+            signer=self.signer,
+            nonce=nonce
+        )
+        
         # ABI encode with string, address, address, uint256 types
         encoded = abi_encode(
             ['string', 'address', 'address', 'uint256'],
@@ -130,11 +138,30 @@ class AsterDEXAuthenticator:
         # Keccak hash the encoded data
         message_hash = Web3.keccak(encoded)
         
-        # ECDSA sign with private key
-        signed_message = self.account.signHash(message_hash)
+        logger.debug(
+            "message_hash_generated",
+            message_hash=message_hash.hex()
+        )
         
-        # Return hex signature
-        return signed_message.signature.hex()
+        # ECDSA sign with private key
+        # AsterDEX uses encode_defunct which adds Ethereum signed message prefix
+        from eth_account.messages import encode_defunct
+        
+        # Create signable message with Ethereum prefix
+        signable_msg = encode_defunct(hexstr=message_hash.hex())
+        
+        # Sign the message
+        signed_message = self.account.sign_message(signable_msg)
+        
+        # Get signature with 0x prefix
+        sig_hex = '0x' + signed_message.signature.hex()
+        
+        logger.debug(
+            "signature_generated",
+            signature=sig_hex
+        )
+        
+        return sig_hex
     
     def add_auth_params(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -158,9 +185,18 @@ class AsterDEXAuthenticator:
         signature = self.sign_request(params, nonce)
         
         # Add authentication parameters
+        # Note: addresses should be lowercase (already done in __init__)
         auth_params['nonce'] = nonce
         auth_params['user'] = self.user
         auth_params['signer'] = self.signer
         auth_params['signature'] = signature
+        
+        logger.debug(
+            "auth_params_added",
+            nonce=nonce,
+            user=self.user,
+            signer=self.signer,
+            signature_length=len(signature)
+        )
         
         return auth_params

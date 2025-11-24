@@ -139,10 +139,9 @@ class BalanceResponse(BaseModel):
     """Response model for account balance."""
     
     asset: str = Field(..., description="Asset name (e.g., USDT)")
-    wallet_balance: Decimal = Field(
+    balance: Decimal = Field(
         ...,
-        description="Total wallet balance",
-        alias="walletBalance"
+        description="Total wallet balance"
     )
     available_balance: Decimal = Field(
         ...,
@@ -154,15 +153,25 @@ class BalanceResponse(BaseModel):
         description="Cross wallet balance",
         alias="crossWalletBalance"
     )
-    unrealized_profit: Decimal = Field(
+    cross_un_pnl: Decimal = Field(
         ...,
-        description="Unrealized profit/loss",
-        alias="unrealizedProfit"
-    )
-    cross_un_pnl: Optional[Decimal] = Field(
-        None,
         description="Cross unrealized PnL",
         alias="crossUnPnl"
+    )
+    max_withdraw_amount: Optional[Decimal] = Field(
+        None,
+        description="Maximum amount for transfer out",
+        alias="maxWithdrawAmount"
+    )
+    margin_available: Optional[bool] = Field(
+        None,
+        description="Whether the asset can be used as margin",
+        alias="marginAvailable"
+    )
+    update_time: Optional[int] = Field(
+        None,
+        description="Update timestamp",
+        alias="updateTime"
     )
     
     model_config = {
