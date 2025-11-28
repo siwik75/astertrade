@@ -2,7 +2,7 @@
 
 import secrets
 from typing import Optional
-from fastapi import HTTPException, Security, status
+from fastapi import HTTPException, Depends, status
 from fastapi.security import APIKeyHeader
 from .config import get_settings
 from .logging_config import get_logger
@@ -10,15 +10,15 @@ from .logging_config import get_logger
 logger = get_logger(__name__)
 
 # API Key header scheme
-# auto_error=True will make it show in OpenAPI docs and return 403 automatically
+# This will automatically show in OpenAPI docs
 api_key_header = APIKeyHeader(
     name="X-API-Key",
-    auto_error=True,
+    auto_error=False,
     description="API key for accessing protected endpoints. Generate with: python generate_api_key.py"
 )
 
 
-def verify_api_key(api_key: str = Security(api_key_header)) -> str:
+def verify_api_key(api_key: Optional[str] = Depends(api_key_header)) -> str:
     """
     Verify API key from request header.
     
@@ -39,6 +39,15 @@ def verify_api_key(api_key: str = Security(api_key_header)) -> str:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="API key authentication is not configured on the server"
+        )
+    
+    # Check if API key was provided
+    if not api_key:
+        logger.warning("api_key_missing")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="API key is required. Provide it in the X-API-Key header.",
+            headers={"WWW-Authenticate": "ApiKey"},
         )
     
     # Verify API key using constant-time comparison
