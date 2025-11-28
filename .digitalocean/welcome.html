@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsterTrade API - Automated Trading Service</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 40px;
+        }
+        
+        .status::before {
+            content: "●";
+            font-size: 1.5em;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+            text-align: left;
+        }
+        
+        .feature {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .feature p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .tech-stack {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .tech {
+            background: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ AsterTrade API</h1>
+        <p class="subtitle">Automated Trading Service for AsterDEX</p>
+        
+        <div class="status">
+            Service Online
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🎯 TradingView Integration</h3>
+                <p>Execute trades automatically from TradingView alerts</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ Real-time Execution</h3>
+                <p>Fast and reliable order placement on AsterDEX</p>
+            </div>
+            <div class="feature">
+                <h3>📊 Position Management</h3>
+                <p>Monitor and manage your trading positions</p>
+            </div>
+            <div class="feature">
+                <h3>🔒 Secure & Private</h3>
+                <p>Your keys stay secure with webhook authentication</p>
+            </div>
+        </div>
+        
+        <div class="links">
+            <a href="/docs" class="btn btn-primary">📚 API Documentation</a>
+            <a href="/health" class="btn btn-secondary">💚 Health Check</a>
+        </div>
+        
+        <div class="tech-stack">
+            <span class="tech">FastAPI</span>
+            <span class="tech">Python</span>
+            <span class="tech">AsterDEX</span>
+            <span class="tech">TradingView</span>
+            <span class="tech">Docker</span>
+        </div>
+        
+        <div class="footer">
+            <p>Powered by AsterDEX Futures API v3</p>
+            <p style="margin-top: 10px;">Need help? Check the <a href="/docs" style="color: #667eea;">documentation</a></p>
+        </div>
+    </div>
+</body>
+</html>
