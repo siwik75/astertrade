@@ -7,6 +7,7 @@ from ..models.responses import BalanceResponse
 from ..services.account_service import AccountService
 from ..client.asterdex_client import AsterDEXClientError
 from ..logging_config import get_logger
+from ..security import verify_api_key
 
 
 logger = get_logger(__name__)
@@ -23,7 +24,7 @@ def get_account_service() -> AccountService:
     "/balance",
     response_model=List[BalanceResponse],
     summary="Get Account Balance",
-    description="Retrieve current balance information for all assets (cached for 5 seconds).",
+    description="Retrieve current balance information for all assets (cached for 5 seconds). Requires API key authentication.",
     responses={
         200: {
             "description": "Account balance information",
@@ -44,7 +45,8 @@ def get_account_service() -> AccountService:
     }
 )
 async def get_balance(
-    account_service: AccountService = Depends(get_account_service)
+    account_service: AccountService = Depends(get_account_service),
+    api_key: str = Depends(verify_api_key)
 ) -> List[BalanceResponse]:
     """
     Get account balance.
@@ -98,7 +100,7 @@ async def get_balance(
 @router.get(
     "/info",
     summary="Get Full Account Information",
-    description="Retrieve comprehensive account details including balances, positions, and settings.",
+    description="Retrieve comprehensive account details including balances, positions, and settings. Requires API key authentication.",
     responses={
         200: {
             "description": "Complete account information",
@@ -137,7 +139,8 @@ async def get_balance(
     }
 )
 async def get_account_info(
-    account_service: AccountService = Depends(get_account_service)
+    account_service: AccountService = Depends(get_account_service),
+    api_key: str = Depends(verify_api_key)
 ) -> dict:
     """
     Get full account information.

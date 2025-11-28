@@ -8,6 +8,7 @@ from ..models.responses import PositionResponse
 from ..services.position_service import PositionService
 from ..client.asterdex_client import AsterDEXClientError
 from ..logging_config import get_logger
+from ..security import verify_api_key
 
 
 logger = get_logger(__name__)
@@ -24,7 +25,7 @@ def get_position_service() -> PositionService:
     "",
     response_model=List[PositionResponse],
     summary="Get All Open Positions",
-    description="Retrieve all current open positions with non-zero amounts.",
+    description="Retrieve all current open positions with non-zero amounts. Requires API key authentication.",
     responses={
         200: {
             "description": "List of open positions",
@@ -49,7 +50,8 @@ def get_position_service() -> PositionService:
     }
 )
 async def get_all_positions(
-    position_service: PositionService = Depends(get_position_service)
+    position_service: PositionService = Depends(get_position_service),
+    api_key: str = Depends(verify_api_key)
 ) -> List[PositionResponse]:
     """
     Get all open positions.
@@ -104,7 +106,7 @@ async def get_all_positions(
     "/{symbol}",
     response_model=PositionResponse,
     summary="Get Position by Symbol",
-    description="Retrieve position information for a specific trading pair.",
+    description="Retrieve position information for a specific trading pair. Requires API key authentication.",
     responses={
         200: {
             "description": "Position information",
@@ -140,7 +142,8 @@ async def get_all_positions(
 )
 async def get_position(
     symbol: str,
-    position_service: PositionService = Depends(get_position_service)
+    position_service: PositionService = Depends(get_position_service),
+    api_key: str = Depends(verify_api_key)
 ) -> PositionResponse:
     """
     Get position for a specific symbol.
@@ -204,7 +207,7 @@ async def get_position(
 @router.post(
     "/{symbol}/leverage",
     summary="Update Position Leverage",
-    description="Change the leverage setting for a specific trading pair (1-125x).",
+    description="Change the leverage setting for a specific trading pair (1-125x). Requires API key authentication.",
     responses={
         200: {
             "description": "Leverage updated successfully",
@@ -236,7 +239,8 @@ async def get_position(
 async def update_leverage(
     symbol: str,
     request: LeverageUpdateRequest,
-    position_service: PositionService = Depends(get_position_service)
+    position_service: PositionService = Depends(get_position_service),
+    api_key: str = Depends(verify_api_key)
 ) -> dict:
     """
     Update leverage for a symbol.
@@ -322,7 +326,7 @@ async def update_leverage(
 @router.post(
     "/{symbol}/margin-type",
     summary="Update Margin Type",
-    description="Change the margin type for a specific trading pair (ISOLATED or CROSSED).",
+    description="Change the margin type for a specific trading pair (ISOLATED or CROSSED). Requires API key authentication.",
     responses={
         200: {
             "description": "Margin type updated successfully",
@@ -354,7 +358,8 @@ async def update_leverage(
 async def update_margin_type(
     symbol: str,
     request: MarginTypeUpdateRequest,
-    position_service: PositionService = Depends(get_position_service)
+    position_service: PositionService = Depends(get_position_service),
+    api_key: str = Depends(verify_api_key)
 ) -> dict:
     """
     Update margin type for a symbol.

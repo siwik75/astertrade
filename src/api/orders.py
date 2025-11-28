@@ -7,6 +7,7 @@ from ..models.responses import OrderResponse
 from ..services.trading_service import TradingService
 from ..client.asterdex_client import AsterDEXClientError
 from ..logging_config import get_logger
+from ..security import verify_api_key
 
 
 logger = get_logger(__name__)
@@ -23,7 +24,7 @@ def get_trading_service() -> TradingService:
     "",
     response_model=List[OrderResponse],
     summary="Get Order History",
-    description="Retrieve historical orders with filtering by symbol and optional time range.",
+    description="Retrieve historical orders with filtering by symbol and optional time range. Requires API key authentication.",
     responses={
         200: {
             "description": "List of orders",
@@ -64,7 +65,8 @@ async def get_orders(
     start_time: Optional[int] = Query(None, description="Start time in milliseconds", ge=0),
     end_time: Optional[int] = Query(None, description="End time in milliseconds", ge=0),
     limit: int = Query(50, description="Number of orders to return", ge=1, le=1000),
-    trading_service: TradingService = Depends(get_trading_service)
+    trading_service: TradingService = Depends(get_trading_service),
+    api_key: str = Depends(verify_api_key)
 ) -> List[OrderResponse]:
     """
     Get order history.
@@ -144,7 +146,7 @@ async def get_orders(
     "/open",
     response_model=List[OrderResponse],
     summary="Get Open Orders",
-    description="Retrieve all currently open (unfilled) orders, optionally filtered by symbol.",
+    description="Retrieve all currently open (unfilled) orders, optionally filtered by symbol. Requires API key authentication.",
     responses={
         200: {
             "description": "List of open orders",
@@ -170,7 +172,8 @@ async def get_orders(
 )
 async def get_open_orders(
     symbol: Optional[str] = Query(None, description="Trading pair symbol (e.g., BTCUSDT)"),
-    trading_service: TradingService = Depends(get_trading_service)
+    trading_service: TradingService = Depends(get_trading_service),
+    api_key: str = Depends(verify_api_key)
 ) -> List[OrderResponse]:
     """
     Get open orders.

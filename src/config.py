@@ -51,6 +51,12 @@ class Settings(BaseSettings):
         description="Optional secret token for webhook validation"
     )
     
+    # API Security
+    api_key: Optional[str] = Field(
+        default=None,
+        description="API key for securing sensitive endpoints (positions, account, orders)"
+    )
+    
     # Trading Defaults
     default_leverage: int = Field(
         default=10,
@@ -133,12 +139,18 @@ class Settings(BaseSettings):
         """Check if webhook secret is configured"""
         return self.webhook_secret is not None and len(self.webhook_secret) > 0
     
+    def is_api_key_configured(self) -> bool:
+        """Check if API key is configured"""
+        return self.api_key is not None and len(self.api_key) > 0
+    
     def get_safe_config(self) -> dict:
         """Get configuration dict with sensitive data masked"""
         config = self.model_dump()
         config["asterdex_private_key"] = "***REDACTED***"
         if config.get("webhook_secret"):
             config["webhook_secret"] = "***REDACTED***"
+        if config.get("api_key"):
+            config["api_key"] = "***REDACTED***"
         return config
 
 

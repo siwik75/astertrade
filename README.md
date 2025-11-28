@@ -5,6 +5,7 @@ A FastAPI-based microservice that bridges TradingView webhook signals with the A
 ## Features
 
 - 🔐 **Secure Authentication**: Web3-based ECDSA signature authentication with AsterDEX API
+- 🔒 **API Key Protection**: Secure sensitive endpoints with API key authentication
 - 📊 **TradingView Integration**: Receive and process webhook signals for automated trading
 - 💼 **Position Management**: Open, increase, decrease, and close positions programmatically
 - 📈 **Account Monitoring**: Query balances, positions, and order history
@@ -17,6 +18,7 @@ A FastAPI-based microservice that bridges TradingView webhook signals with the A
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Configuration](#configuration)
+- [Security Setup](#security-setup)
 - [Running the Server](#running-the-server)
 - [Deployment](#deployment)
 - [TradingView Webhook Setup](#tradingview-webhook-setup)
@@ -93,7 +95,48 @@ All configuration is managed through environment variables. Copy `.env.example` 
 - **Never commit your `.env` file** to version control
 - Store `ASTERDEX_PRIVATE_KEY` securely (use secrets management in production)
 - Set `WEBHOOK_SECRET` to validate incoming TradingView webhooks
+- Set `API_KEY` to protect sensitive endpoints (see [Security Setup](#security-setup))
 - Use HTTPS in production environments
+
+## Security Setup
+
+**Important**: Sensitive endpoints (`/positions`, `/account`, `/orders`) are now protected with API key authentication.
+
+### Quick Setup
+
+1. **Generate an API key**:
+   ```bash
+   python generate_api_key.py
+   ```
+
+2. **Add to your `.env` file**:
+   ```bash
+   API_KEY=your-generated-key-here
+   ```
+
+3. **Restart the server**:
+   ```bash
+   docker compose restart
+   ```
+
+### Using Protected Endpoints
+
+Include the API key in the `X-API-Key` header:
+
+```bash
+curl -H "X-API-Key: your-api-key-here" \
+  http://localhost:8000/positions
+```
+
+### What's Protected?
+
+- ✅ **Protected** (requires API key): `/positions`, `/account`, `/orders`
+- ✅ **Public**: `/health`, `/docs`
+- ✅ **Webhook** (requires webhook secret): `/webhook/tradingview`
+
+For complete security documentation, see:
+- [docs/SECURITY_SETUP.md](docs/SECURITY_SETUP.md) - Quick setup guide
+- [docs/API_SECURITY.md](docs/API_SECURITY.md) - Complete security documentation
 
 ## Running the Server
 
