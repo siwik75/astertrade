@@ -77,10 +77,12 @@ Use `X-Webhook-Secret` header (not API key):
 ## Swagger UI
 
 1. Go to `/docs`
-2. Click "Authorize" button
+2. Click "Authorize" button (🔓 top right)
 3. Enter your API key
 4. Click "Authorize"
-5. Test endpoints
+5. Test endpoints (look for 🔒 icon)
+
+See [SWAGGER_AUTH_GUIDE.md](SWAGGER_AUTH_GUIDE.md) for visual guide.
 
 ## Full Documentation
 

@@ -12,6 +12,8 @@ Added API key authentication to protect sensitive endpoints that expose your pri
 - **`generate_api_key.py`** - Script to generate secure API keys
 - **`docs/API_SECURITY.md`** - Complete security documentation
 - **`docs/SECURITY_SETUP.md`** - Quick setup guide
+- **`docs/SWAGGER_AUTH_GUIDE.md`** - Visual guide for using Swagger UI with authentication
+- **`docs/API_KEY_QUICKREF.md`** - Quick reference card
 - **`SECURITY_IMPLEMENTATION.md`** - This file
 
 ### 2. Files Modified
@@ -57,7 +59,9 @@ These remain publicly accessible:
 2. **Configuration**: Store the key in `.env` as `API_KEY=your-key`
 3. **Verification**: The `verify_api_key()` dependency checks the `X-API-Key` header
 4. **Constant-Time Comparison**: Uses `secrets.compare_digest()` to prevent timing attacks
-5. **Error Responses**: Returns 401 (missing key) or 403 (invalid key)
+5. **Error Responses**: Returns 403 (invalid/missing key)
+6. **OpenAPI Documentation**: Protected endpoints show a lock icon (🔒) in `/docs`
+7. **Swagger UI Integration**: "Authorize" button allows testing with API key
 
 ## Setup Instructions
 

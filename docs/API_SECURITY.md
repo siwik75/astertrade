@@ -140,10 +140,15 @@ fetch('http://astertrade.ai/positions', {
 #### In Swagger UI (/docs)
 
 1. Visit `http://astertrade.ai/docs`
-2. Click the "Authorize" button (lock icon) at the top
-3. Enter your API key in the "X-API-Key" field
+2. Click the "Authorize" button (🔓 lock icon) at the top right
+3. Enter your API key in the "Value" field under "X-API-Key (apiKey)"
 4. Click "Authorize"
-5. Now you can test protected endpoints
+5. Click "Close"
+6. Now you can test protected endpoints - they'll show a 🔒 lock icon
+
+**Note**: Protected endpoints will display a lock icon (🔒) in the documentation, indicating they require authentication.
+
+For a detailed visual guide, see [SWAGGER_AUTH_GUIDE.md](SWAGGER_AUTH_GUIDE.md).
 
 ## Error Responses
 

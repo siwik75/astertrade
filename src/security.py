@@ -10,10 +10,15 @@ from .logging_config import get_logger
 logger = get_logger(__name__)
 
 # API Key header scheme
-api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+# auto_error=True will make it show in OpenAPI docs and return 403 automatically
+api_key_header = APIKeyHeader(
+    name="X-API-Key",
+    auto_error=True,
+    description="API key for accessing protected endpoints. Generate with: python generate_api_key.py"
+)
 
 
-def verify_api_key(api_key: Optional[str] = Security(api_key_header)) -> str:
+def verify_api_key(api_key: str = Security(api_key_header)) -> str:
     """
     Verify API key from request header.
     
@@ -34,15 +39,6 @@ def verify_api_key(api_key: Optional[str] = Security(api_key_header)) -> str:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="API key authentication is not configured on the server"
-        )
-    
-    # Check if API key was provided
-    if not api_key:
-        logger.warning("api_key_missing")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="API key is required. Provide it in the X-API-Key header.",
-            headers={"WWW-Authenticate": "ApiKey"},
         )
     
     # Verify API key using constant-time comparison

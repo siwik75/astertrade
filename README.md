@@ -128,6 +128,8 @@ curl -H "X-API-Key: your-api-key-here" \
   http://localhost:8000/positions
 ```
 
+**In Swagger UI** (`/docs`): Protected endpoints show a lock icon (🔒). Click "Authorize" to enter your API key and test endpoints interactively. See [docs/SWAGGER_AUTH_GUIDE.md](docs/SWAGGER_AUTH_GUIDE.md) for details.
+
 ### What's Protected?
 
 - ✅ **Protected** (requires API key): `/positions`, `/account`, `/orders`
